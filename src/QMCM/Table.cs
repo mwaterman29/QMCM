@@ -18,25 +18,26 @@ public class Table
         get { return _group_count; }
     }
 
-    //holds amount of non answers, this will be used to see if we need to make another table
-    int _number_non_answers;
-    public int Number_Non_Answers
+    //holds the truth value of the current table having more answers to pass on to a new table
+    bool _has_answers;
+    public bool Has_Answers
     {
-        set { _number_non_answers = value; }
-        get { return _number_non_answers; }
+        set { _has_answers = value; }
+        get { return _has_answers; }
     }
     
     public Table(List<Group> group, int varCount)
     {
         sGroup = group;
         possible_answers = new List<string>();
-        Number_Non_Answers = 0;
+        Has_Answers = false;
         Group_Count = varCount; //sGroup[0].Members[0].Binary.Length; //establishes the max amount of groups needed
     }
 
     //ballences first table into the final combined table
-    public List<Group> balanceTables(List<Group> group)
+    public List<Group> balanceTables()
     {
+        List<Group> group = sGroup;
         int bitDifference = 0; // number of bit differences between pair of minterms
         List<Group> tempTable = new List<Group>();
         for (int i = 0; i <= Group_Count; i++)
@@ -57,6 +58,7 @@ public class Table
                         if (m.Binary[j] != n.Binary[j])//if binary digits are the same
                         {
                             bitDifference += 1;                 //if binary digits are not the same add flag
+                            Has_Answers = true;
                         }            
                     }
                     if(bitDifference == 1) //if only one bit differs add minterm to next tables group

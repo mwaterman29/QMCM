@@ -44,24 +44,56 @@ public class Program
 
         Console.WriteLine($"Firsts binary = {first.Binary} and seconds binary = {second.Binary}, so thirds binary = {third.Binary}");
 
-        Table initialTable = new Table(groups, varCount);
+        //list of tables
+        List<Table> TableList = new List<Table>();
+        //value of next table returning more minterms
+        bool more_minterms = true;
+        int table_indexer = 0;
 
-        Table firstMerge = new Table(initialTable.balanceTables(initialTable.sGroup), varCount-1);
-
-
+        TableList.Add(new Table(groups, varCount));//adds first table
         for (int g = 0; g < groups.Count; g++)
         {
-            foreach (Minterm m in initialTable.sGroup[g].Members)
+            foreach (Minterm m in TableList[0].sGroup[g].Members)
             {
                 Console.WriteLine($"Minterm {g} = {m.Binary}");
             }
         }
-        for (int a = 0; a < firstMerge.sGroup.Count - 1; a++)
+        while (more_minterms)
         {
-            foreach (Minterm n in firstMerge.sGroup[a].Members)
+            Table temp = new Table(TableList[table_indexer].eGroup, varCount - table_indexer);
+            TableList.Add(temp);
+            more_minterms = TableList[table_indexer].Has_Answers;
+           
+            table_indexer++;
+            for (int g = 0; g < TableList[table_indexer].Group_Count; g++)
             {
-                Console.WriteLine($"Minterm {a} = {n.Binary}");
+                foreach (Minterm m in TableList[table_indexer].sGroup[g].Members)
+                {
+                    Console.WriteLine($"Minterm {g} = {m.Binary}");
+                }
             }
         }
+
+        //Table initialTable = new Table(groups, varCount);
+
+        //Table firstMerge = new Table(initialTable.balanceTables(initialTable.sGroup), varCount-1);
+
+
+        //for (int g = 0; g < groups.Count; g++)
+        //{
+        //    foreach (Minterm m in initialTable.sGroup[g].Members)
+        //    {
+        //        Console.WriteLine($"Minterm {g} = {m.Binary}");
+        //    }
+        //}
+        //for (int a = 0; a < firstMerge.sGroup.Count - 1; a++)
+        //{
+        //    foreach (Minterm n in firstMerge.sGroup[a].Members)
+        //    {
+        //        Console.WriteLine($"Minterm {a} = {n.Binary}");
+        //    }
+        //}
+
+
     }
 }
