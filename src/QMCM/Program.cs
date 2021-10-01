@@ -37,6 +37,7 @@ public class Program
         //List out groups
         groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
 
+        //test for new minterm constructer  
         Minterm first = new Minterm(0, 4);
         Minterm second = new Minterm(1, 4);
         Minterm third = new Minterm(first, second);
