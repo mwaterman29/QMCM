@@ -53,12 +53,15 @@ public class Minterm
     {
         Value_List.AddRange(first.Value_List);//combine the Value_Lists 
         Value_List.AddRange(second.Value_List);
-        List<string> temp;
         for(int i = 0; i < first.Binary.Length; i++)//start of combining the binarys
         {
-            if(first.Binary[i] == second.Binary[i])
+            if (first.Binary[i] == second.Binary[i])
             {
-                temp.Add(first.Binary[i])
+                Binary += first.Binary[i];
+            }
+            else
+            {
+                Binary += '_';
             }
         }
     }
