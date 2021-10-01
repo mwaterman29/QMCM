@@ -34,8 +34,8 @@ public class Minterm
     List<int> _value_list;
     public List<int> Value_List
     {
-        get;
-        set;
+        get { return _value_list; }
+        set { _value_list = Value_List; }
     }
 
     //Updated count of ones and zeroes
@@ -44,6 +44,7 @@ public class Minterm
     public Minterm(int val, int variableCount)
     {
         Value = val;
+        Value_List = new List<int>();
         Value_List.Add(val);
         Binary = Convert.ToString(val, 2).PadLeft(variableCount, '0');
     }
@@ -51,6 +52,7 @@ public class Minterm
     //constructor to combine 2 minterms
     public Minterm(Minterm first, Minterm second)
     {
+        Value_List = new List<int>();
         Value_List.AddRange(first.Value_List);//combine the Value_Lists 
         Value_List.AddRange(second.Value_List);
         for(int i = 0; i < first.Binary.Length; i++)//start of combining the binarys
