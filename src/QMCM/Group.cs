@@ -12,6 +12,8 @@ public class Group
         set { _key = value; }
     }
 
+    
+
     public List<Minterm> Members;
 
     public Group()
