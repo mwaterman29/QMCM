@@ -44,17 +44,21 @@ public class Program
 
         Console.WriteLine($"Firsts binary = {first.Binary} and seconds binary = {second.Binary}, so thirds binary = {third.Binary}");
 
-        Table test = new Table(groups, varCount);
+        Table initialTable = new Table(groups, varCount);
+
+        Table firstMerge = new Table(initialTable.balanceTables(initialTable.sGroup), varCount-1);
+
+
         for (int g = 0; g < groups.Count; g++)
         {
-            foreach (Minterm m in test.sGroup[g].Members)
+            foreach (Minterm m in initialTable.sGroup[g].Members)
             {
                 Console.WriteLine($"Minterm {g} = {m.Binary}");
             }
         }
-        for (int a = 0; a < test.eGroup.Count - 1; a++)
+        for (int a = 0; a < firstMerge.sGroup.Count - 1; a++)
         {
-            foreach (Minterm n in test.eGroup[a].Members)
+            foreach (Minterm n in firstMerge.sGroup[a].Members)
             {
                 Console.WriteLine($"Minterm {a} = {n.Binary}");
             }

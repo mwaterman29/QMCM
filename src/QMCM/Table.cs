@@ -32,11 +32,9 @@ public class Table
         possible_answers = new List<string>();
         Number_Non_Answers = 0;
         Group_Count = varCount; //sGroup[0].Members[0].Binary.Length; //establishes the max amount of groups needed
-                                                          //probably change later for efficency
-        eGroup = balanceTables(sGroup);                    //get final group for next table
     }
 
-    //ballences first table into the final combind table
+    //ballences first table into the final combined table
     public List<Group> balanceTables(List<Group> group)
     {
         int bitDifference = 0; // number of bit differences between pair of minterms
