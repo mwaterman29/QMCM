@@ -44,26 +44,26 @@ public class Minterm
     public Minterm(int val, int variableCount)
     {
         Value = val;
-        Value_List = new List<int>();
-        Value_List.Add(val);
+        _value_list = new List<int>();
+        _value_list.Add(val);
         Binary = Convert.ToString(val, 2).PadLeft(variableCount, '0');
     }
 
     //constructor to combine 2 minterms
     public Minterm(Minterm first, Minterm second)
     {
-        Value_List = new List<int>();
-        Value_List.AddRange(first.Value_List);//combine the Value_Lists 
-        Value_List.AddRange(second.Value_List);
+        _value_list = new List<int>();
+        _value_list.AddRange(first.Value_List);//combine the Value_Lists 
+        _value_list.AddRange(second.Value_List);
         for(int i = 0; i < first.Binary.Length; i++)//start of combining the binarys
         {
             if (first.Binary[i] == second.Binary[i])
             {
-                Binary += first.Binary[i];
+                _binary += first.Binary[i];
             }
             else
             {
-                Binary += '_';
+                _binary += '_';
             }
         }
     }
