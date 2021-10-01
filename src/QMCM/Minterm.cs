@@ -16,7 +16,7 @@ public class Minterm
     public bool Is_Used
     {
         get { return _is_used; }
-        set { _is_used = Is_Used; }
+        set { _is_used = value; }
     }
 
     //Binary representation of the minterm (i.e. 0101)

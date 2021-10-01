@@ -44,7 +44,7 @@ public class Program
 
         Console.WriteLine($"Firsts binary = {first.Binary} and seconds binary = {second.Binary}, so thirds binary = {third.Binary}");
 
-        Table test = new Table(groups);
+        Table test = new Table(groups, varCount);
         for (int g = 0; g < groups.Count; g++)
         {
             foreach (Minterm m in test.sGroup[g].Members)
@@ -52,7 +52,7 @@ public class Program
                 Console.WriteLine($"Minterm {g} = {m.Binary}");
             }
         }
-        for (int a = 0; a < groups.Count - 1; a++)
+        for (int a = 0; a < test.eGroup.Count - 1; a++)
         {
             foreach (Minterm n in test.eGroup[a].Members)
             {
