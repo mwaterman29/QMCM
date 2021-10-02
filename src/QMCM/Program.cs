@@ -88,24 +88,28 @@ public class Program
         foreach (Minterm s in primeImplicants)
         {
             Console.WriteLine($"binary = {s.Binary}");
-            foreach (int q in s.Value_List)
-            {
-                Console.Write($" {q} ");
-            }
-            Console.Write($"\n");
+            //foreach (int q in s.Value_List)
+            //{
+            //    Console.Write($" {q} ");
+            //}
+            //Console.Write($"\n");
         }
-        essencialPrimeImplicants = findEPI(primeImplicants);
+        Console.Write($"\n");
+        primeImplicantsTable PImp = new primeImplicantsTable(primeImplicants, vars);
+        essencialPrimeImplicants = PImp.findEPI();
         foreach (Minterm s in essencialPrimeImplicants)
         {
             Console.WriteLine($"binary = {s.Binary}");
-            foreach (int q in s.Value_List)
-            {
-                Console.Write($" {q} ");
-            }
-            Console.Write($"\n");
+            //foreach (int q in s.Value_List)
+            //{
+            //    Console.Write($" {q} ");
+            //}
+            //Console.Write($"\n");
         }
 
     }
+
+
 
     //take out any duplicate implicants
     public static List<Minterm> reduceAnswerString(List<Minterm> primeImplicants)
@@ -121,12 +125,5 @@ public class Program
             }
         }
         return primeImplicants;
-    }
-
-    public static List<Minterm> findEPI(List<Minterm> primeImplicants)
-    {
-        List<Minterm> EPI = new List<Minterm>();
-
-        return EPI;
     }
 }
