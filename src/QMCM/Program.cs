@@ -17,8 +17,8 @@ public class Program
             .Select(x => new Minterm(int.Parse(x), varCount))
             .ToList();
 
-        //List out minterms and their properties
-        minterms.ForEach(m => Console.WriteLine($"Minterm {m.Value} is binary {m.Binary} with {m.Ones} ones and {m.Zeroes} zeroes"));
+        ////List out minterms and their properties
+        //minterms.ForEach(m => Console.WriteLine($"Minterm {m.Value} is binary {m.Binary} with {m.Ones} ones and {m.Zeroes} zeroes"));
 
         //Make n groups
         List<Group> groups = new List<Group>();
@@ -28,14 +28,14 @@ public class Program
         //Sort minterms into groups
         minterms.ForEach(m => groups[m.Ones].Members.Add(m));
 
-        //List out groups
-        groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
+        ////List out groups
+        //groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
 
-        //Pare down groups, remove groups with no members
-        groups = groups.Where(g => g.Members.Count != 0).ToList();
+        ////Pare down groups, remove groups with no members
+        //groups = groups.Where(g => g.Members.Count != 0).ToList();
 
-        //List out groups
-        groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
+        ////List out groups
+        //groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
 
         //list of tables
         List<Table> TableList = new List<Table>();
@@ -68,12 +68,14 @@ public class Program
         }
         List<Minterm> primeImplicants = new List<Minterm>();//new minterm list for prime implicants
         List<Minterm> essencialPrimeImplicants = new List<Minterm>();//new minterm list for essencial prime implicants
+        List<Minterm> keeperPrimeImplicants = new List<Minterm>();
+        List<List<string>> answers = new List<List<string>>();
         foreach(Table e in TableList)//iterate over the table list to find tables
         {
             primeImplicants.AddRange(e.possible_answers);//add their possibble
         }
 
-        foreach(Minterm s in primeImplicants)//itterate over the prime implicants list
+        foreach(Minterm s in primeImplicants)//itterate over the prime implicants list and print
         {
             Console.WriteLine($"binary = {s.Binary}");
             foreach(int q in s.Value_List)
@@ -85,27 +87,54 @@ public class Program
 
         primeImplicants = reduceAnswerString(primeImplicants);//take out any duplicate implicants
         Console.WriteLine($"\n");
-        foreach (Minterm s in primeImplicants)
+
+        Console.WriteLine($"pime");
+        foreach (Minterm s in primeImplicants)//iterate over prime implicants and print
         {
             Console.WriteLine($"binary = {s.Binary}");
-            //foreach (int q in s.Value_List)
-            //{
-            //    Console.Write($" {q} ");
-            //}
-            //Console.Write($"\n");
+            foreach (int q in s.Value_List)
+            {
+                Console.Write($" {q} ");
+            }
+            Console.Write($"\n");
         }
         Console.Write($"\n");
-        primeImplicantsTable PImp = new primeImplicantsTable(primeImplicants, vars);
-        essencialPrimeImplicants = PImp.findEPI();
+        primeImplicantsTable PImp = new primeImplicantsTable(primeImplicants, vars, minterms);//get prime implicants
+        essencialPrimeImplicants = PImp.findEPI();                                            //get essencial prime implicants
+        keeperPrimeImplicants = reduceAnswerString(PImp.findKeepers());                       //get prime implicants we need to keep
+
+        Console.WriteLine($"essencial");    //itterate over essencial prime implicants and print
         foreach (Minterm s in essencialPrimeImplicants)
         {
             Console.WriteLine($"binary = {s.Binary}");
-            //foreach (int q in s.Value_List)
-            //{
-            //    Console.Write($" {q} ");
-            //}
-            //Console.Write($"\n");
+            foreach (int q in s.Value_List)
+            {
+                Console.Write($" {q} ");
+            }
+            Console.Write($"\n");
         }
+        Console.Write($"\n");
+
+        Console.WriteLine($"keepers pime");//itterate over keeperPrimeImplicants and print
+        foreach (Minterm s in keeperPrimeImplicants)
+        {
+            Console.WriteLine($"binary = {s.Binary}");
+            foreach (int q in s.Value_List)
+            {
+                Console.Write($" {q} ");
+            }
+            Console.Write($"\n");
+        }
+
+        //answers = PImp.getAnswerList(keeperPrimeImplicants);
+
+        //foreach(List<string> x in answers)
+        //{
+        //   foreach(string c in x)
+        //    {
+        //        Console.WriteLine($"{c}"); ;
+        //    }
+        //}
 
     }
 

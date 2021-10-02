@@ -61,9 +61,10 @@ public class Table
                             Has_Answers = true;
                         }            
                     }
+                    //Console.WriteLine($"dif = {bitDifference}");
                     if(bitDifference == 1) //if only one bit differs add minterm to next tables group
                     {
-                        //Console.WriteLine($"got here");
+                        //Console.WriteLine($"bit a == {m.Binary}, bit b == {n.Binary}");
                         tempTable[i].Members.Add(new Minterm(m, n));//make new minterm and add to other tables group
                         m.Is_Used = true;       //marks m as used
                         n.Is_Used = true;       //marks n as used
