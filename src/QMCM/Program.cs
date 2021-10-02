@@ -66,26 +66,67 @@ public class Program
             }
             Console.WriteLine($"\n");
         }
-        List<string> answerString = new List<string>();
-        foreach(Table e in TableList)
+        List<Minterm> primeImplicants = new List<Minterm>();//new minterm list for prime implicants
+        List<Minterm> essencialPrimeImplicants = new List<Minterm>();//new minterm list for essencial prime implicants
+        foreach(Table e in TableList)//iterate over the table list to find tables
         {
-            answerString.AddRange(e.possible_answers);
+            primeImplicants.AddRange(e.possible_answers);//add their possibble
         }
-        foreach(string s in answerString)
+
+        foreach(Minterm s in primeImplicants)//itterate over the prime implicants list
         {
-            Console.WriteLine($"string {s}");
+            Console.WriteLine($"binary = {s.Binary}");
+            foreach(int q in s.Value_List)
+            {
+                Console.Write($" {q} ");
+            }
+            Console.Write($"\n");
         }
-        answerString = reduceAnswerString(answerString);
+
+        primeImplicants = reduceAnswerString(primeImplicants);//take out any duplicate implicants
         Console.WriteLine($"\n");
-        foreach (string s in answerString)
+        foreach (Minterm s in primeImplicants)
         {
-            Console.WriteLine($"string {s}");
+            Console.WriteLine($"binary = {s.Binary}");
+            foreach (int q in s.Value_List)
+            {
+                Console.Write($" {q} ");
+            }
+            Console.Write($"\n");
+        }
+        essencialPrimeImplicants = findEPI(primeImplicants);
+        foreach (Minterm s in essencialPrimeImplicants)
+        {
+            Console.WriteLine($"binary = {s.Binary}");
+            foreach (int q in s.Value_List)
+            {
+                Console.Write($" {q} ");
+            }
+            Console.Write($"\n");
         }
 
     }
 
-    public static List<string> reduceAnswerString(List<string> answerString)
+    //take out any duplicate implicants
+    public static List<Minterm> reduceAnswerString(List<Minterm> primeImplicants)
     {
-        return answerString.Distinct().ToList();
+        for(int i = 0; i < primeImplicants.Count; i++)
+        {
+            for(int j = i+1; j < primeImplicants.Count; j++)
+            {
+                if(primeImplicants[i].Binary == primeImplicants[j].Binary)
+                {
+                    primeImplicants.RemoveAt(j);
+                }
+            }
+        }
+        return primeImplicants;
+    }
+
+    public static List<Minterm> findEPI(List<Minterm> primeImplicants)
+    {
+        List<Minterm> EPI = new List<Minterm>();
+
+        return EPI;
     }
 }

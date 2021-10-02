@@ -9,8 +9,8 @@ public class Table
     //ending group, group with final values for next table
     public List<Group> eGroup;
     //contains all posible answers from this table at the end
-    public List<string> possible_answers;
-
+    public List<Minterm> possible_answers;
+    
     int _group_count;
     public int Group_Count
     {
@@ -29,7 +29,7 @@ public class Table
     public Table(List<Group> group, int varCount)
     {
         sGroup = group;
-        possible_answers = new List<string>();
+        possible_answers = new List<Minterm>();
         Has_Answers = false;
         Group_Count = varCount; //sGroup[0].Members[0].Binary.Length; //establishes the max amount of groups needed
     }
@@ -79,7 +79,7 @@ public class Table
             {
                 if(!(b.Is_Used))
                 {
-                    possible_answers.Add(b.Binary);
+                    possible_answers.Add(b);
                 }
 
             }
