@@ -37,26 +37,20 @@ public class Program
         //List out groups
         groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
 
-        //test for new minterm constructer  
-        Minterm first = new Minterm(0, 4);
-        Minterm second = new Minterm(1, 4);
-        Minterm third = new Minterm(first, second);
-
-        Console.WriteLine($"Firsts binary = {first.Binary} and seconds binary = {second.Binary}, so thirds binary = {third.Binary}");
-
         //list of tables
         List<Table> TableList = new List<Table>();
         //value of next table returning more minterms
-        bool more_minterms = true;
-        int indexer = 0;
+        bool more_minterms = true;  // goes false if there are not any minterms left to solve
+        int indexer = 0;    // while loop index
 
+        //ballences a table then makes another table with the new minterms until no more can be made.
        while(more_minterms)
         {
-            Table tempTable = new Table(groups, varCount - indexer);
-            tempTable.eGroup = tempTable.balanceTables();
-            groups = tempTable.eGroup;
-            TableList.Add(tempTable);
-            more_minterms = tempTable.Has_Answers;
+            Table tempTable = new Table(groups, varCount - indexer);// creates new table with the user input group list
+            tempTable.eGroup = tempTable.balanceTables();//sets the ending groups as the ballenced group from the table before
+            groups = tempTable.eGroup;//sets the groups variable as the last balenced group list
+            TableList.Add(tempTable);//adds the table to the table list
+            more_minterms = tempTable.Has_Answers;//checks if we need to run through the loop again
             indexer++;
         }
 
@@ -67,12 +61,31 @@ public class Program
             {
                 foreach(Minterm a in d.Members)
                 {
-                    Console.WriteLine($"minterm {a} = binary {a.Binary}");
+                    Console.WriteLine($"binary {a.Binary}");
                 }
-                Console.WriteLine($"\n");
             }
+            Console.WriteLine($"\n");
+        }
+        List<string> answerString = new List<string>();
+        foreach(Table e in TableList)
+        {
+            answerString.AddRange(e.possible_answers);
+        }
+        foreach(string s in answerString)
+        {
+            Console.WriteLine($"string {s}");
+        }
+        answerString = reduceAnswerString(answerString);
+        Console.WriteLine($"\n");
+        foreach (string s in answerString)
+        {
+            Console.WriteLine($"string {s}");
         }
 
+    }
 
+    public static List<string> reduceAnswerString(List<string> answerString)
+    {
+        return answerString.Distinct().ToList();
     }
 }

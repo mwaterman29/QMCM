@@ -63,6 +63,7 @@ public class Table
                     }
                     if(bitDifference == 1) //if only one bit differs add minterm to next tables group
                     {
+                        //Console.WriteLine($"got here");
                         tempTable[i].Members.Add(new Minterm(m, n));//make new minterm and add to other tables group
                         m.Is_Used = true;       //marks m as used
                         n.Is_Used = true;       //marks n as used
@@ -83,6 +84,10 @@ public class Table
 
             }
         }
+        //foreach(string s in possible_answers)
+        //{
+        //    Console.WriteLine($"answers {s}");
+        //}
         return tempTable;
     }
 }
