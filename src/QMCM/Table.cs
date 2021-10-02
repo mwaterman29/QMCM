@@ -42,7 +42,7 @@ public class Table
         List<Group> tempTable = new List<Group>();
         for (int i = 0; i <= Group_Count; i++)
             tempTable.Add(new Group(i));
-        Console.WriteLine($"tempTable c : {tempTable.Count} with gc {Group_Count}");
+        //Console.WriteLine($"tempTable c : {tempTable.Count} with gc {Group_Count}");
 
         for (int i = 0; i < group.Count - 1; i++) // for each group 0 - n-1
         {
