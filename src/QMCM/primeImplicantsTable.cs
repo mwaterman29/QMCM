@@ -200,4 +200,43 @@ class primeImplicantsTable
         }
         return true;
     }
+
+    public static List<List<Minterm>> GenerateCombinations(List<Minterm> keepers)
+    {
+        //Iterative creation of level-order tree
+        List<List<Minterm>> allCombinations = new List<List<Minterm>>();
+        List<List<Minterm>> combinations = new List<List<Minterm>>(); //start with no combinations
+        combinations.Add(new List<Minterm>());
+
+        //iterate to n levels where n is the length of the keepers list
+        int n = keepers.Count;
+        int count = 0;
+        while(count < n)
+        {
+            List<List<Minterm>> nextCombinations = new List<List<Minterm>>();
+
+            //append each item to each combo
+            foreach (List<Minterm> combo in combinations)
+            { 
+                foreach(Minterm k in keepers)
+                {
+                    //Deep copy this combination
+                    List<Minterm> nextCombo = new List<Minterm>(combo);
+                    //Append new minterm to it
+                    nextCombo.Add(k);
+                    //Add this combination to the next level of the tree
+                    nextCombinations.Add(nextCombo);
+                    //Add to list of all combinations
+                    allCombinations.Add(nextCombo);
+                }
+            }
+            //Replace level with next level, increment count
+            combinations = nextCombinations;
+            count++;
+
+        }
+
+        return allCombinations;
+
+    }
 }

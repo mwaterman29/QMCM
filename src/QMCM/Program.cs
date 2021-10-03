@@ -1,11 +1,26 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 public class Program
 {
     public static void Main(string[] args)
-    {
+    {   
+        /*
+         * [https://www.tutorialspoint.com/digital_circuits/digital_circuits_quine_mccluskey_tabular_method.htm]
+        Step 1 − Arrange the given min terms in an ascending order and make the groups based on the number of ones present in their binary representations. So, there will be at most ‘n+1’ groups if there are ‘n’ Boolean variables in a Boolean function or ‘n’ bits in the binary equivalent of min terms.
+
+        Step 2 − Compare the min terms present in successive groups. If there is a change in only one-bit position, then take the pair of those two min terms. Place this symbol '_' in the differed bit position and keep the remaining bits as it is.
+
+        Step 3 − Repeat step2 with newly formed terms till we get all prime implicants.
+
+        Step 4 − Formulate the prime implicant table. It consists of set of rows and columns. Prime implicants can be placed in row wise and min terms can be placed in column wise. Place ‘1’ in the cells corresponding to the min terms that are covered in each prime implicant.
+
+        Step 5 − Find the essential prime implicants by observing each column. If the min term is covered only by one prime implicant, then it is essential prime implicant. Those essential prime implicants will be part of the simplified Boolean function.
+
+        Step 6 − Reduce the prime implicant table by removing the row of each essential prime implicant and the columns corresponding to the min terms that are covered in that essential prime implicant. Repeat step 5 for Reduced prime implicant table. Stop this process when all min terms of given Boolean function are over.
+        */
+
         //Read line of comma-separated variables
         Console.WriteLine($"input variables on one line then minterms on the next line");
         string line = Console.ReadLine();
@@ -18,9 +33,6 @@ public class Program
             .Select(x => new Minterm(int.Parse(x), varCount))
             .ToList();
 
-        ////List out minterms and their properties
-        //minterms.ForEach(m => Console.WriteLine($"Minterm {m.Value} is binary {m.Binary} with {m.Ones} ones and {m.Zeroes} zeroes"));
-
         //Make n groups
         List<Group> groups = new List<Group>();
         for (int i = 0; i <= varCount; i++)
@@ -29,15 +41,6 @@ public class Program
         //Sort minterms into groups
         minterms.ForEach(m => groups[m.Ones].Members.Add(m));
 
-        ////List out groups
-        //groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
-
-        ////Pare down groups, remove groups with no members
-        //groups = groups.Where(g => g.Members.Count != 0).ToList();
-
-        ////List out groups
-        //groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
-
         //list of tables
         List<Table> TableList = new List<Table>();
         //value of next table returning more minterms
@@ -45,7 +48,7 @@ public class Program
         int indexer = 0;    // while loop index
 
         //ballences a table then makes another table with the new minterms until no more can be made.
-       while(more_minterms)
+        while(more_minterms)
         {
             Table tempTable = new Table(groups, varCount - indexer);// creates new table with the user input group list
             tempTable.eGroup = tempTable.balanceTables();//sets the ending groups as the ballenced group from the table before
@@ -68,6 +71,9 @@ public class Program
             }
             Console.WriteLine($"\n");
         }
+
+
+
         List<Minterm> primeImplicants = new List<Minterm>();//new minterm list for prime implicants
         List<Minterm> essencialPrimeImplicants = new List<Minterm>();//new minterm list for essencial prime implicants
         List<Minterm> keeperPrimeImplicants = new List<Minterm>();
@@ -106,6 +112,19 @@ public class Program
         primeImplicantsTable PImp = new primeImplicantsTable(primeImplicants, vars, minterms);//get prime implicants
         essencialPrimeImplicants = PImp.findEPI();                                            //get essencial prime implicants
         keeperPrimeImplicants = reduceAnswerString(PImp.findKeepers());                       //get prime implicants we need to keep
+
+        Console.WriteLine($"PRINTING COMBOS!!!!\n\n\n");
+
+        List<List<Minterm>> combos = primeImplicantsTable.GenerateCombinations(keeperPrimeImplicants);
+        foreach(List<Minterm> combo in combos)
+        {
+            foreach(Minterm m in combo)
+            {
+                Console.Write(m.Binary + ", ");
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine($"DONE PRINTING COMBOS!!!!\n\n\n");
 
         Console.WriteLine($"essencial");    //itterate over essencial prime implicants and print
         foreach (Minterm s in essencialPrimeImplicants)
@@ -160,4 +179,22 @@ public class Program
         }
         return primeImplicants;
     }
+
 }
+
+/*
+ * 
+ * 
+
+        ////List out groups
+        //groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
+
+        ////Pare down groups, remove groups with no members
+        //groups = groups.Where(g => g.Members.Count != 0).ToList();
+
+        ////List out groups
+        //groups.ForEach(g => Console.WriteLine($"Group {g.Key} has {g.Members.Count} members"));
+
+
+        //minterms.ForEach(m => Console.WriteLine($"Minterm {m.Value} is binary {m.Binary} with {m.Ones} ones and {m.Zeroes} zeroes"));
+*/

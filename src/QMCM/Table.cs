@@ -34,7 +34,7 @@ public class Table
         Group_Count = varCount; //sGroup[0].Members[0].Binary.Length; //establishes the max amount of groups needed
     }
 
-    //ballences first table into the final combined table
+    //balances first table into the final combined table
     public List<Group> balanceTables()
     {
         List<Group> group = sGroup;
