@@ -7,6 +7,7 @@ public class Program
     public static void Main(string[] args)
     {
         //Read line of comma-separated variables
+        Console.WriteLine($"input variables on one line then minterms on the next line");
         string line = Console.ReadLine();
         List<string> vars = line.Split(',').ToList();
         int varCount = vars.Count;
@@ -54,8 +55,9 @@ public class Program
             indexer++;
         }
 
-        
-        foreach(Table e in TableList)
+        Console.WriteLine($"\nEach table in succesion"); 
+
+        foreach(Table e in TableList)       //itterates through every table in the list and prints it
         {
             foreach(Group d in e.sGroup)
             {
@@ -75,15 +77,17 @@ public class Program
             primeImplicants.AddRange(e.possible_answers);//add their possibble
         }
 
-        foreach(Minterm s in primeImplicants)//itterate over the prime implicants list and print
-        {
-            Console.WriteLine($"binary = {s.Binary}");
-            foreach(int q in s.Value_List)
-            {
-                Console.Write($" {q} ");
-            }
-            Console.Write($"\n");
-        }
+        //foreach(Minterm s in primeImplicants)//itterate over the prime implicants list and print
+        //{
+        //    Console.WriteLine($"binary = {s.Binary}");
+        //    foreach(int q in s.Value_List)
+        //    {
+        //        Console.Write($" {q} ");
+        //    }
+        //    Console.Write($"\n");
+        //}
+
+        Console.WriteLine($"Lists of primes:");
 
         primeImplicants = reduceAnswerString(primeImplicants);//take out any duplicate implicants
         Console.WriteLine($"\n");
@@ -126,15 +130,16 @@ public class Program
             Console.Write($"\n");
         }
 
-        //answers = PImp.getAnswerList(keeperPrimeImplicants);
+        answers = PImp.getAnswerList(keeperPrimeImplicants);
 
-        //foreach(List<string> x in answers)
-        //{
-        //   foreach(string c in x)
-        //    {
-        //        Console.WriteLine($"{c}"); ;
-        //    }
-        //}
+        foreach (List<string> x in answers)
+        {
+            foreach (string c in x)
+            {
+                Console.Write($" {c} "); ;
+            }
+            Console.WriteLine($"\n");
+        }
 
     }
 
