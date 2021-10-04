@@ -83,20 +83,12 @@ public class Program
             primeImplicants.AddRange(e.possible_answers);//add their possibble
         }
 
-        Console.WriteLine($"Lists of primes:");
-
         primeImplicants = reduceAnswerString(primeImplicants);//take out any duplicate implicants
         Console.WriteLine($"\n");
 
-        Console.WriteLine($"pime");
-        foreach (Minterm s in primeImplicants)//iterate over prime implicants and print
-        {
-            Console.WriteLine($"binary = {s.Binary}");
-        }
-        Console.Write($"\n");
         primeImplicantsTable PImp = new primeImplicantsTable(primeImplicants, vars, minterms);//get prime implicants
         essencialPrimeImplicants = PImp.findEPI();                                            //get essencial prime implicants
-        keeperPrimeImplicants = reduceAnswerString(PImp.findKeepers());                       //get prime implicants we need to keep
+        keeperPrimeImplicants = PImp.findKeepers().Distinct().ToList();                       //get prime implicants we need to keep
 
       
 
@@ -117,6 +109,7 @@ public class Program
 
         answers = PImp.getAnswerList(essencialPrimeImplicants, keeperPrimeImplicants);
 
+        Console.WriteLine($"answers:");
         foreach (List<Minterm> x in answers)
         {
             foreach (Minterm c in x)
