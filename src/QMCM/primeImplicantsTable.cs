@@ -131,30 +131,92 @@ class primeImplicantsTable
         }
 
         return answersL;                                        //return answer list
-    }   
+    }
 
-    //finds keeper implicants
     public List<Minterm> findKeepers()//finds the prime implicants we would like to keep from the prime implicants list
     {
         int flag = 0;
-        foreach(Minterm x in primeImplicants)
+        foreach (Minterm x in primeImplicants)
         {
             flag = 0;
-            foreach(Minterm y in essencialPrimeImplicants)
+            foreach (Minterm y in essencialPrimeImplicants)
             {
-                if(y.Binary == x.Binary)
+                if (y.Binary == x.Binary)
                 {
                     //Console.WriteLine($"prime {x.Binary} EPI {y.Binary}");
                     flag++;
                 }
             }
-            if(flag == 0)
+            if (flag == 0)
             {
                 keeperPrimeImplicants.Add(x);
             }
         }
         return keeperPrimeImplicants;
     }
+    ////finds keeper implicants
+    //public List<Minterm> findKeepers()//finds the prime implicants we would like to keep from the prime implicants list
+    //{
+    //    int flag = 0;
+    //    int flag2 = 0;
+    //    List<int> values_needed = new List<int>();
+    //    foreach (Minterm r in primeImplicants)
+    //    {
+    //        foreach(int a in r.Value_List)
+    //        {
+    //            flag2 = 0;
+    //            Console.WriteLine($"a = {a}");
+    //            foreach(Minterm s in essencialPrimeImplicants)
+    //            {
+    //                if(s.Value_List.Contains(a))
+    //                {
+    //                    flag2++;
+    //                }
+    //            }
+    //            if (flag2 == 0)
+    //            {
+    //                Console.WriteLine($" in a = {a}");
+    //                values_needed.Add(a);
+    //            }
+    //        }
+    //    }
+    //    List<int> tempVals = new List<int>();
+    //    values_needed = values_needed.Distinct().ToList();
+    //    foreach(Minterm a in primeImplicants)
+    //    {
+    //        tempVals.AddRange(a.Value_List);
+    //    }
+
+       
+    //    values_needed = values_needed.Distinct().ToList();
+    //    foreach(Minterm x in primeImplicants)
+    //    {
+    //        flag = 0;
+    //        foreach(Minterm y in essencialPrimeImplicants)
+    //        {
+    //            if(y.Binary == x.Binary)
+    //            {
+    //                Console.WriteLine($"prime {x.Binary} EPI {y.Binary}");
+    //                flag++;
+    //            }
+    //        }
+    //        if(flag == 0)
+    //        {
+    //            foreach(int r in values_needed)
+    //            {
+    //                if(!x.Value_List.Contains(r))
+    //                {
+    //                    Console.WriteLine($"x = {x.Binary}");
+    //                    keeperPrimeImplicants.Add(x);
+    //                }
+    //            }
+                
+                
+
+    //        }
+    //    }
+    //    return keeperPrimeImplicants.Distinct().ToList();
+    //}
    
 
 
