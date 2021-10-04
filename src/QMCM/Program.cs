@@ -77,21 +77,11 @@ public class Program
         List<Minterm> primeImplicants = new List<Minterm>();//new minterm list for prime implicants
         List<Minterm> essencialPrimeImplicants = new List<Minterm>();//new minterm list for essencial prime implicants
         List<Minterm> keeperPrimeImplicants = new List<Minterm>();
-        List<List<string>> answers = new List<List<string>>();
+        List<List<Minterm>> answers = new List<List<Minterm>>();
         foreach(Table e in TableList)//iterate over the table list to find tables
         {
             primeImplicants.AddRange(e.possible_answers);//add their possibble
         }
-
-        //foreach(Minterm s in primeImplicants)//itterate over the prime implicants list and print
-        //{
-        //    Console.WriteLine($"binary = {s.Binary}");
-        //    foreach(int q in s.Value_List)
-        //    {
-        //        Console.Write($" {q} ");
-        //    }
-        //    Console.Write($"\n");
-        //}
 
         Console.WriteLine($"Lists of primes:");
 
@@ -102,39 +92,18 @@ public class Program
         foreach (Minterm s in primeImplicants)//iterate over prime implicants and print
         {
             Console.WriteLine($"binary = {s.Binary}");
-            foreach (int q in s.Value_List)
-            {
-                Console.Write($" {q} ");
-            }
-            Console.Write($"\n");
         }
         Console.Write($"\n");
         primeImplicantsTable PImp = new primeImplicantsTable(primeImplicants, vars, minterms);//get prime implicants
         essencialPrimeImplicants = PImp.findEPI();                                            //get essencial prime implicants
         keeperPrimeImplicants = reduceAnswerString(PImp.findKeepers());                       //get prime implicants we need to keep
 
-        Console.WriteLine($"PRINTING COMBOS!!!!\n\n\n");
-
-        List<List<Minterm>> combos = primeImplicantsTable.GenerateCombinations(keeperPrimeImplicants);
-        foreach(List<Minterm> combo in combos)
-        {
-            foreach(Minterm m in combo)
-            {
-                Console.Write(m.Binary + ", ");
-            }
-            Console.WriteLine();
-        }
-        Console.WriteLine($"DONE PRINTING COMBOS!!!!\n\n\n");
+      
 
         Console.WriteLine($"essencial");    //itterate over essencial prime implicants and print
         foreach (Minterm s in essencialPrimeImplicants)
         {
             Console.WriteLine($"binary = {s.Binary}");
-            foreach (int q in s.Value_List)
-            {
-                Console.Write($" {q} ");
-            }
-            Console.Write($"\n");
         }
         Console.Write($"\n");
 
@@ -142,22 +111,19 @@ public class Program
         foreach (Minterm s in keeperPrimeImplicants)
         {
             Console.WriteLine($"binary = {s.Binary}");
-            foreach (int q in s.Value_List)
-            {
-                Console.Write($" {q} ");
-            }
-            Console.Write($"\n");
+            
         }
+        Console.Write($"\n");
 
-        answers = PImp.getAnswerList(keeperPrimeImplicants);
+        answers = PImp.getAnswerList(essencialPrimeImplicants, keeperPrimeImplicants);
 
-        foreach (List<string> x in answers)
+        foreach (List<Minterm> x in answers)
         {
-            foreach (string c in x)
+            foreach (Minterm c in x)
             {
-                Console.Write($" {c} "); ;
+                Console.Write($" {printBinaryToString(c.Binary, vars)} "); 
             }
-            Console.WriteLine($"\n");
+            Console.WriteLine();
         }
 
     }
@@ -178,6 +144,36 @@ public class Program
             }
         }
         return primeImplicants;
+    }
+
+    //converts binary representation of minvalues to variable strings
+    public static string printBinaryToString(string binary, List<string> variabls)
+    {
+        string finalString = "";
+
+        for(int i = 0; i < variabls.Count; i++)             //for the amout of variabls in this problem
+        {
+            if(binary[i] == '_')                            //if binary[i] is a _ dont add anything to final string and continue
+            {
+                continue;
+            }
+            switch (binary[i])                              //switch statement for checking if its a 1 or 0
+            {
+                case '1':
+                    finalString += variabls[i].Trim();            
+                    break;
+                case '0':
+                    finalString += variabls[i].Trim() + "'";
+                    break;
+                default:
+                    finalString += "E";
+                    break;
+            }
+
+        }
+        
+
+        return finalString;
     }
 
 }
