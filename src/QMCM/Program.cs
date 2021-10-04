@@ -88,9 +88,8 @@ public class Program
 
         primeImplicantsTable PImp = new primeImplicantsTable(primeImplicants, vars, minterms);//get prime implicants
         essencialPrimeImplicants = PImp.findEPI();                                            //get essencial prime implicants
-        keeperPrimeImplicants = PImp.findKeepers().Distinct().ToList();                       //get prime implicants we need to keep
+        keeperPrimeImplicants = reduceAnswerString(PImp.findKeepers());                       //get prime implicants we need to keep
 
-      
 
         Console.WriteLine($"essencial");    //itterate over essencial prime implicants and print
         foreach (Minterm s in essencialPrimeImplicants)
