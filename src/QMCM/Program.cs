@@ -5,8 +5,56 @@ using System.Linq;
 public class Program
 {
     public static void Main(string[] args)
-    {   
-        /*
+    {
+        //list init
+        List<Minterm> minterms = new List<Minterm>();
+        List<string> vars = new List<string>();
+
+        //Prompt user
+        Console.WriteLine($"Enter a file path to read from a file, two comma separated files paths for testing, or a list of variables then a list of minterms to run the program.");
+
+        //Read line in
+        string line = Console.ReadLine();
+        if(line.Contains("/") || line.Contains(".") || line.Contains("\\")) // if line is a file path
+        {
+            if(line.Split(',').Length == 1) //if one file
+            {
+                Console.WriteLine($"Running input from file {line}");
+                string path = line.Trim();
+            }
+            else if(line.Split(',').Length == 2)
+            {
+                Console.WriteLine($"Running tests from input file {line.Split(',')[0]}, to match output file {line.Split(',')[1].Trim()}");
+                string inPath = line.Split(',')[0].Trim();
+                string outPath = line.Split(',')[1].Trim();
+            }
+            else
+            {
+                Console.WriteLine($"Sorry, no more than two files are accepted. File paths cannot contain commas.");
+                return;
+            }
+        }
+        else
+        {
+            //first line should be variables
+            vars.AddRange(line.Split(',').ToList());
+            int varCount = vars.Count;
+
+            //Read line of comma-separated minterms
+            line = Console.ReadLine();
+            minterms.AddRange( 
+                line.Split(',')
+                .Select(x => new Minterm(int.Parse(x), varCount))
+                .ToList()
+                );
+
+            //run on those variables
+            Run(minterms, vars);
+        }
+
+    }
+
+    /*
          * [https://www.tutorialspoint.com/digital_circuits/digital_circuits_quine_mccluskey_tabular_method.htm]
         Step 1 − Arrange the given min terms in an ascending order and make the groups based on the number of ones present in their binary representations. So, there will be at most ‘n+1’ groups if there are ‘n’ Boolean variables in a Boolean function or ‘n’ bits in the binary equivalent of min terms.
 
@@ -20,18 +68,9 @@ public class Program
 
         Step 6 − Reduce the prime implicant table by removing the row of each essential prime implicant and the columns corresponding to the min terms that are covered in that essential prime implicant. Repeat step 5 for Reduced prime implicant table. Stop this process when all min terms of given Boolean function are over.
         */
-
-        //Read line of comma-separated variables
-        Console.WriteLine($"input variables on one line then minterms on the next line");
-        string line = Console.ReadLine();
-        List<string> vars = line.Split(',').ToList();
+    public static void Run(List<Minterm> minterms, List<string> vars, ushort printMask = 65535)
+    {
         int varCount = vars.Count;
-
-        //Read line of comma-separated minterms
-        line = Console.ReadLine();
-        List<Minterm> minterms = line.Split(',')
-            .Select(x => new Minterm(int.Parse(x), varCount))
-            .ToList();
 
         //Make n groups
         List<Group> groups = new List<Group>();
@@ -48,7 +87,7 @@ public class Program
         int indexer = 0;    // while loop index
 
         //ballences a table then makes another table with the new minterms until no more can be made.
-        while(more_minterms)
+        while (more_minterms)
         {
             Table tempTable = new Table(groups, varCount - indexer);// creates new table with the user input group list
             tempTable.eGroup = tempTable.balanceTables();//sets the ending groups as the ballenced group from the table before
@@ -58,13 +97,13 @@ public class Program
             indexer++;
         }
 
-        Console.WriteLine($"\nEach table in succesion"); 
+        Console.WriteLine($"\nEach table in succesion");
 
-        foreach(Table e in TableList)       //itterates through every table in the list and prints it
+        foreach (Table e in TableList)       //itterates through every table in the list and prints it
         {
-            foreach(Group d in e.sGroup)
+            foreach (Group d in e.sGroup)
             {
-                foreach(Minterm a in d.Members)
+                foreach (Minterm a in d.Members)
                 {
                     Console.WriteLine($"binary {a.Binary}");
                 }
@@ -78,7 +117,7 @@ public class Program
         List<Minterm> essencialPrimeImplicants = new List<Minterm>();//new minterm list for essencial prime implicants
         List<Minterm> keeperPrimeImplicants = new List<Minterm>();
         List<List<Minterm>> answers = new List<List<Minterm>>();
-        foreach(Table e in TableList)//iterate over the table list to find tables
+        foreach (Table e in TableList)//iterate over the table list to find tables
         {
             primeImplicants.AddRange(e.possible_answers);//add their possibble
         }
@@ -102,7 +141,7 @@ public class Program
         foreach (Minterm s in keeperPrimeImplicants)
         {
             Console.WriteLine($"binary = {s.Binary}");
-            
+
         }
         Console.Write($"\n");
 
@@ -113,14 +152,11 @@ public class Program
         {
             foreach (Minterm c in x)
             {
-                Console.Write($" {printBinaryToString(c.Binary, vars)} "); 
+                Console.Write($" {printBinaryToString(c.Binary, vars)} ");
             }
             Console.WriteLine();
         }
-
     }
-
-
 
     //take out any duplicate implicants
     public static List<Minterm> reduceAnswerString(List<Minterm> primeImplicants)
