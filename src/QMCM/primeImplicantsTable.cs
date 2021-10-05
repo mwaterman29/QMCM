@@ -43,7 +43,7 @@ class primeImplicantsTable
         List<int> usedInt = new List<int>();                    //integers already used
         bool bFlag;                                             //used to see if second part needs to break
         int flag = 0;                                           //used to see if first part needs to add value to keeper values
-
+        keepers = keepers.Distinct().ToList();
         //create list of original minterm values that we need to get combos for (ie 1, 3, 12)
         foreach(Minterm l in keepers)                           //itterate through keepers minterm list
         {
@@ -70,7 +70,7 @@ class primeImplicantsTable
 
         foreach(Minterm p in keepers)                           //for all the minterms in the keepers list
         {                                                       //take out all not needed values
-            p.Value_List = p.Value_List.Intersect(keeperVals).ToList();
+            p.Value_List = p.Value_List.Intersect(keeperVals).Distinct().ToList();
         }
 
         //get combos needed
@@ -81,8 +81,8 @@ class primeImplicantsTable
             answers = new List<Minterm>();                      //reset answers Minterm list
             intersecionVals = new List<int>();                  //reset intersection vals list
             bFlag = false;                                      //reset b flag to false
-            intersecionVals = k.Value_List.Intersect(tempKeeperVals).ToList();//find minvalues this minterm already covers
-            answers.Add(k);                                     //add that minterm to answer list
+            intersecionVals = k.Value_List.Intersect(tempKeeperVals).Distinct().ToList();//find minvalues this minterm already covers
+            answers.Distinct().ToList().Add(k);                                     //add that minterm to answer list
             foreach (int p in intersecionVals)                  //itterate over intersection vals and remove
             {                                                   //minvalues that this minterm already covers
                 if(tempKeeperVals.Contains(p))
@@ -117,8 +117,11 @@ class primeImplicantsTable
             }
             foreach(Minterm h in essencialPrimes)              //add essencial primes to every answer
             {
-                answers.Add(h);
+                if(!answers.Contains(h))
+                    answers.Add(h);
+
             }
+            answers = answers.Distinct().ToList();
             answersL.Add(answers);                             //add answers list to list of answers lists
         }
         if (answersL.Count == 0)                               //if there were no keeper primes to find combos for, add esencial primes to answer list
@@ -152,6 +155,7 @@ class primeImplicantsTable
                 keeperPrimeImplicants.Add(x);
             }
         }
+        keeperPrimeImplicants = keeperPrimeImplicants.Distinct().ToList();
         return keeperPrimeImplicants;
     }
     ////finds keeper implicants
@@ -236,6 +240,7 @@ class primeImplicantsTable
                 }
             }
         }
+        essencialPrimeImplicants = essencialPrimeImplicants.Distinct().ToList();
         return essencialPrimeImplicants;
     }
 
