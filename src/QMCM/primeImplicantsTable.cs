@@ -103,6 +103,7 @@ class primeImplicantsTable
                     {                                                                              //and we havent used that minterm yet
                                                                                                    //and we havent seen that number yet
                         answers.Add(j);                         //add the minterm to the answer list
+                        answers = answers.Distinct().ToList();
                         usedTerms.Add(j);                       //add the minterm to the used minterm list
                         foreach(int n in j.Value_List)          //add all minterms minvalues to the used int list
                         {
@@ -119,9 +120,8 @@ class primeImplicantsTable
             }
             foreach(Minterm h in essencialPrimes)              //add essencial primes to every answer
             {
-                if(!answers.Contains(h))
-                    answers.Add(h);
-
+                answers.Add(h);
+                answers = answers.Distinct().ToList();
             }
             answers = answers.Distinct().ToList();
             answersL.Add(answers);                             //add answers list to list of answers lists
@@ -134,9 +134,9 @@ class primeImplicantsTable
             }
             answersL.Add(answers);
         }
-        foreach(List<Minterm> i in answersL)
+        foreach(List<Minterm> p in answersL)
         {
-            final_answers.Add(i.Distinct().ToList());
+            final_answers.Add(p.Distinct().ToList());
         }
         return final_answers;                                        //return answer list
     }
@@ -308,4 +308,5 @@ class primeImplicantsTable
         return allCombinations;
 
     }
+
 }
