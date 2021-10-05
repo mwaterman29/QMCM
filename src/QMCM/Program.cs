@@ -274,7 +274,7 @@ public class Program
         answers = PImp.getAnswerList(essentialPrimeImplicants, keeperPrimeImplicants);
 
         string answersString = string.Empty;
-        foreach (List<Minterm> x in answers)
+        foreach (List<Minterm> x in answers)//checks only one of the answers, prob need to change this later
         {
             foreach (Minterm c in x)
             {

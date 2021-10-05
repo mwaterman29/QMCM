@@ -249,11 +249,11 @@ class primeImplicantsTable
     {
         int flag = 0;
         List<int> values_found = new List<int>();
-        foreach(Minterm q in essencialPrimeImplicants)
+        foreach(Minterm q in essencialPrimeImplicants)  //make list of already found minterms
         {
             values_found.AddRange(q.Value_List);
         }
-        values_found = values_found.Distinct().ToList();
+        values_found = values_found.Distinct().ToList();//take out dupes
         foreach (Minterm x in primeImplicants)
         {
             foreach(int q in values_found)
@@ -263,16 +263,16 @@ class primeImplicantsTable
             flag = 0;
             foreach (Minterm y in essencialPrimeImplicants)
             {
-                if (y.Binary == x.Binary || !unique_int_int_list2(values_found, x.Value_List))
+                if (y.Binary == x.Binary || !unique_int_int_list2(values_found, x.Value_List))//if we have the same minterm or there is no uniqe values 
                 {
-                    values_found.AddRange(x.Value_List);
+                    values_found.AddRange(x.Value_List);                                      //add those vals to the list
                     //Console.WriteLine($"prime {x.Binary} EPI {y.Binary}");
-                    flag++;
+                    flag++;                                                                   //flag increse by 1
                 }
             }
             if (flag == 0)
             {
-                keeperPrimeImplicants.Add(x);
+                keeperPrimeImplicants.Add(x);                                                 //if we havent seen the binary and we need a value in the list, add this to the keepers
             }
         }
         keeperPrimeImplicants = keeperPrimeImplicants.Distinct().ToList();
