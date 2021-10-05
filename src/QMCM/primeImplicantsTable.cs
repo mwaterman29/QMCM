@@ -41,9 +41,11 @@ class primeImplicantsTable
         List<int> tempKeeperVals = new List<int>();             //tempory list of keeper values
         List<Minterm> usedTerms = new List<Minterm>();          //midterms already used
         List<int> usedInt = new List<int>();                    //integers already used
+        List<List<Minterm>> final_answers = new List<List<Minterm>>();
         bool bFlag;                                             //used to see if second part needs to break
         int flag = 0;                                           //used to see if first part needs to add value to keeper values
         keepers = keepers.Distinct().ToList();
+        essencialPrimes = essencialPrimes.Distinct().ToList();
         //create list of original minterm values that we need to get combos for (ie 1, 3, 12)
         foreach(Minterm l in keepers)                           //itterate through keepers minterm list
         {
@@ -132,8 +134,11 @@ class primeImplicantsTable
             }
             answersL.Add(answers);
         }
-
-        return answersL;                                        //return answer list
+        foreach(List<Minterm> i in answersL)
+        {
+            final_answers.Add(i.Distinct().ToList());
+        }
+        return final_answers;                                        //return answer list
     }
 
     public List<Minterm> findKeepers()//finds the prime implicants we would like to keep from the prime implicants list
