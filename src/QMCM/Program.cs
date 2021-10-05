@@ -306,11 +306,11 @@ public class Program
     }
 
     //converts binary representation of minvalues to variable strings
-    public static string printBinaryToString(string binary, List<string> variabls)
+    public static string printBinaryToString(string binary, List<string> variables)
     {
         string finalString = "";
 
-        for(int i = 0; i < variabls.Count; i++)             //for the amout of variabls in this problem
+        for(int i = 0; i < variables.Count; i++)             //for the amout of variables in this problem
         {
             if(binary[i] == '_')                            //if binary[i] is a _ dont add anything to final string and continue
             {
@@ -319,10 +319,10 @@ public class Program
             switch (binary[i])                              //switch statement for checking if its a 1 or 0
             {
                 case '1':
-                    finalString += variabls[i].Trim();            
+                    finalString += variables[i].Trim();            
                     break;
                 case '0':
-                    finalString += variabls[i].Trim() + "'";
+                    finalString += variables[i].Trim() + "'";
                     break;
                 default:
                     finalString += "E";
@@ -330,7 +330,6 @@ public class Program
             }
 
         }
-        
 
         return finalString;
     }

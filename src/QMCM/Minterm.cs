@@ -72,5 +72,16 @@ public class Minterm
         }
     }
 
+    public override bool Equals(object obj)
+    {
+        if (obj.GetType() != typeof(Minterm))
+            return false;
+        return this.Binary == ((Minterm)obj).Binary;
+    }
+
+    public override int GetHashCode()
+    {
+        return Value;
+    }
 
 }
