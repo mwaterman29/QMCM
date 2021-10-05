@@ -47,57 +47,57 @@ class primeImplicantsTable
         keepers = keepers.Distinct().ToList();
         essencialPrimes = essencialPrimes.Distinct().ToList();
         //create list of original minterm values that we need to get combos for (ie 1, 3, 12)
-        foreach(Minterm l in keepers)                           //itterate through keepers minterm list
+        foreach (Minterm l in keepers)                           //itterate through keepers minterm list
         {
             foreach (int s in l.Value_List)                     //itterate through the minterms value list
-            {       
+            {
                 flag = 0;                                       //reset flag variable to 0
                 foreach (Minterm a in essencialPrimes)          //itterate through minterms in essencial primes
-                {   
+                {
                     if (a.Value_List.Contains(s))               //if the essencial prime covers this minterm
                     {
                         flag++;                                 //set flag + 1. if this flag is greater than 0
                     }                                           //we know that the essencial primes cover that minterm
-                    
+
                 }
-                
-                if(flag == 0)                                   //if flag == 0 we need to add that minterm integer to
+
+                if (flag == 0)                                   //if flag == 0 we need to add that minterm integer to
                 {                                               //the ones we need to find combos for later
                     keeperVals.Add(s);
-                    
+
                 }
             }
         }
         keeperVals = keeperVals.Distinct().ToList();            //take out any duplicates from the list
 
-        foreach(Minterm p in keepers)                           //for all the minterms in the keepers list
+        foreach (Minterm p in keepers)                           //for all the minterms in the keepers list
         {                                                       //take out all not needed values
             p.Value_List = p.Value_List.Intersect(keeperVals).Distinct().ToList();
         }
 
         //get combos needed
-        foreach(Minterm k in keepers)                           //itterate over all keeper values                           
-        {               
+        foreach (Minterm k in keepers)                           //itterate over all keeper values                           
+        {
             usedInt = new List<int>();                          //reset used int list                      
             tempKeeperVals = new List<int>(keeperVals);         //reset temp keeper vals list
             answers = new List<Minterm>();                      //reset answers Minterm list
             intersecionVals = new List<int>();                  //reset intersection vals list
             bFlag = false;                                      //reset b flag to false
             intersecionVals = k.Value_List.Intersect(tempKeeperVals).Distinct().ToList();//find minvalues this minterm already covers
-            answers.Distinct().ToList().Add(k);                                     //add that minterm to answer list
+            answers.Add(k);                                     //add that minterm to answer list
             foreach (int p in intersecionVals)                  //itterate over intersection vals and remove
             {                                                   //minvalues that this minterm already covers
-                if(tempKeeperVals.Contains(p))
+                if (tempKeeperVals.Contains(p))
                 {
                     tempKeeperVals.Remove(p);
                 }
             }
-            
+
             //start to get all combos
             foreach (Minterm j in keepers)                      //itterate over all keeper list minterms                      
             {
                 bFlag = false;                                  //reset bFlag to false
-                foreach(int q in tempKeeperVals)                //itterate over all ints in temp keeper vals
+                foreach (int q in tempKeeperVals)                //itterate over all ints in temp keeper vals
                 {
                     if (j.Value_List.Contains(q) && !usedTerms.Contains(j) && !usedInt.Contains(q))//if q is in the minterms needed values
                     {                                                                              //and we havent used that minterm yet
@@ -105,26 +105,26 @@ class primeImplicantsTable
                         answers.Add(j);                         //add the minterm to the answer list
                         answers = answers.Distinct().ToList();
                         usedTerms.Add(j);                       //add the minterm to the used minterm list
-                        foreach(int n in j.Value_List)          //add all minterms minvalues to the used int list
+                        foreach (int n in j.Value_List)          //add all minterms minvalues to the used int list
                         {
                             usedInt.Add(n);
                         }
                         bFlag = true;                           //set bflag to true
-                        
-                    }    
-                    if(bFlag)                                   //if this operation was succesful breal
+
+                    }
+                    if (bFlag)                                   //if this operation was succesful breal
                     {
                         break;
                     }
                 }
             }
-            foreach(Minterm h in essencialPrimes)              //add essencial primes to every answer
+            foreach (Minterm h in essencialPrimes)              //add essencial primes to every answer
             {
                 answers.Add(h);
                 answers = answers.Distinct().ToList();
             }
-            answers = answers.Distinct().ToList();
-            answersL.Add(clear_dupes(answers));                             //add answers list to list of answers lists
+            
+            answersL.Add(answers);                             //add answers list to list of answers lists
         }
         if (answersL.Count == 0)                               //if there were no keeper primes to find combos for, add esencial primes to answer list
         {
@@ -134,20 +134,138 @@ class primeImplicantsTable
             }
             answersL.Add(answers);
         }
-        
+
         return answersL;                                        //return answer list
     }
+
+
+    //public List<List<Minterm>> getAnswerList(List<Minterm> essencialPrimes, List<Minterm> keepers)
+    //{
+    //    List<List<Minterm>> answersL = new List<List<Minterm>>();//list of answer lists
+    //    List<Minterm> answers = new List<Minterm>();            //list of answers
+    //    List<int> keeperVals = new List<int>();                 //list of keeper values
+    //    List<int> intersecionVals = new List<int>();            //values of the intersection keeper value list and minterm valuelist  
+    //    List<int> tempKeeperVals = new List<int>();             //tempory list of keeper values
+    //    List<Minterm> usedTerms = new List<Minterm>();          //midterms already used
+    //    List<int> usedInt = new List<int>();                    //integers already used
+    //    List<List<Minterm>> final_answers = new List<List<Minterm>>();
+    //    bool bFlag;                                             //used to see if second part needs to break
+    //    int flag = 0;                                           //used to see if first part needs to add value to keeper values
+    //    keepers = keepers.Distinct().ToList();
+    //    essencialPrimes = essencialPrimes.Distinct().ToList();
+    //    //create list of original minterm values that we need to get combos for (ie 1, 3, 12)
+    //    foreach(Minterm l in keepers)                           //itterate through keepers minterm list
+    //    {
+    //        foreach (int s in l.Value_List)                     //itterate through the minterms value list
+    //        {       
+    //            flag = 0;                                       //reset flag variable to 0
+    //            foreach (Minterm a in essencialPrimes)          //itterate through minterms in essencial primes
+    //            {   
+    //                if (a.Value_List.Contains(s))               //if the essencial prime covers this minterm
+    //                {
+    //                    flag++;                                 //set flag + 1. if this flag is greater than 0
+    //                }                                           //we know that the essencial primes cover that minterm
+
+    //            }
+
+    //            if(flag == 0)                                   //if flag == 0 we need to add that minterm integer to
+    //            {                                               //the ones we need to find combos for later
+    //                keeperVals.Add(s);
+
+    //            }
+    //        }
+    //    }
+    //    keeperVals = keeperVals.Distinct().ToList();            //take out any duplicates from the list
+
+    //    foreach(Minterm p in keepers)                           //for all the minterms in the keepers list
+    //    {                                                       //take out all not needed values
+    //        p.Value_List = p.Value_List.Intersect(keeperVals).Distinct().ToList();
+    //    }
+
+    //    //get combos needed
+    //    foreach(Minterm k in keepers)                           //itterate over all keeper values                           
+    //    {               
+    //        usedInt = new List<int>();                          //reset used int list                      
+    //        tempKeeperVals = new List<int>(keeperVals);         //reset temp keeper vals list
+    //        answers = new List<Minterm>();                      //reset answers Minterm list
+    //        intersecionVals = new List<int>();                  //reset intersection vals list
+    //        bFlag = false;                                      //reset b flag to false
+    //        intersecionVals = k.Value_List.Intersect(tempKeeperVals).Distinct().ToList();//find minvalues this minterm already covers
+    //        answers.Distinct().ToList().Add(k);                                     //add that minterm to answer list
+    //        foreach (int p in intersecionVals)                  //itterate over intersection vals and remove
+    //        {                                                   //minvalues that this minterm already covers
+    //            if(tempKeeperVals.Contains(p))
+    //            {
+    //                tempKeeperVals.Remove(p);
+    //            }
+    //        }
+
+    //        //start to get all combos
+    //        foreach (Minterm j in keepers)                      //itterate over all keeper list minterms                      
+    //        {
+    //            bFlag = false;                                  //reset bFlag to false
+    //            foreach(int q in tempKeeperVals)                //itterate over all ints in temp keeper vals
+    //            {
+    //                if (j.Value_List.Contains(q) && !usedTerms.Contains(j) && !usedInt.Contains(q))//if q is in the minterms needed values
+    //                {                                                                              //and we havent used that minterm yet
+    //                                                                                               //and we havent seen that number yet
+    //                    answers.Add(j);                         //add the minterm to the answer list
+    //                    answers = answers.Distinct().ToList();
+    //                    usedTerms.Add(j);                       //add the minterm to the used minterm list
+    //                    foreach(int n in j.Value_List)          //add all minterms minvalues to the used int list
+    //                    {
+    //                        usedInt.Add(n);
+    //                    }
+    //                    bFlag = true;                           //set bflag to true
+
+    //                }    
+    //                if(bFlag)                                   //if this operation was succesful breal
+    //                {
+    //                    break;
+    //                }
+    //            }
+    //        }
+    //        foreach(Minterm h in essencialPrimes)              //add essencial primes to every answer
+    //        {
+    //            answers.Add(h);
+    //            answers = answers.Distinct().ToList();
+    //        }
+    //        answers = answers.Distinct().ToList();
+    //        answersL.Add(clear_dupes(answers));                             //add answers list to list of answers lists
+    //    }
+    //    if (answersL.Count == 0)                               //if there were no keeper primes to find combos for, add esencial primes to answer list
+    //    {
+    //        foreach (Minterm w in essencialPrimes)
+    //        {
+    //            answers.Add(w);
+    //        }
+    //        answersL.Add(answers);
+    //    }
+
+    //    return answersL;                                        //return answer list
+    //}
 
     public List<Minterm> findKeepers()//finds the prime implicants we would like to keep from the prime implicants list
     {
         int flag = 0;
+        List<int> values_found = new List<int>();
+        foreach(Minterm q in essencialPrimeImplicants)
+        {
+            values_found.AddRange(q.Value_List);
+        }
+        values_found = values_found.Distinct().ToList();
         foreach (Minterm x in primeImplicants)
         {
+            foreach(int q in values_found)
+            {
+                Console.WriteLine(q);
+            }
             flag = 0;
             foreach (Minterm y in essencialPrimeImplicants)
             {
-                if (y.Binary == x.Binary)
+                if (y.Binary == x.Binary || !unique_int_int_list2(values_found, x.Value_List))
                 {
+                    values_found.AddRange(x.Value_List);
                     //Console.WriteLine($"prime {x.Binary} EPI {y.Binary}");
                     flag++;
                 }
@@ -338,6 +456,26 @@ class primeImplicantsTable
                 Console.WriteLine("true");
                 return true;
             }
+        }
+        Console.WriteLine("false");
+        return false;
+    }
+
+    private bool unique_int_int_list2(List<int> list, List<int> list2)
+    {
+        int flag = 0;
+        foreach (int k in list2)
+        {
+            if (!list.Contains(k))
+            {
+                Console.WriteLine("k = " + k);
+                flag++;
+            }
+        }
+        if (flag != 0)
+        {
+            Console.WriteLine("true");
+            return true;
         }
         Console.WriteLine("false");
         return false;

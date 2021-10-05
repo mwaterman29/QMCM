@@ -281,6 +281,7 @@ public class Program
                 Console.WriteLine("minterm binaray = " + c.Binary);
                 answersString += $"{printBinaryToString(c.Binary, vars)} + ";
             }
+            break;
         }
         
 
