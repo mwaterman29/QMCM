@@ -87,7 +87,7 @@ public class Program
                 );
 
             //run on those variables
-            Run(minterms, vars);
+            Run(minterms, vars, 0);
         }
     }
 
@@ -218,24 +218,25 @@ public class Program
             indexer++;
         }
 
-        Console.WriteLine($"\nEach table in succesion");
-
-        foreach (Table e in TableList)       //itterates through every table in the list and prints it
+        if(nthBit(printMask, 0) == 1)
         {
-            foreach (Group d in e.sGroup)
+            Console.WriteLine($"\nEach table in succesion");
+
+            foreach (Table e in TableList)       //itterates through every table in the list and prints it
             {
-                foreach (Minterm a in d.Members)
+                foreach (Group d in e.sGroup)
                 {
-                    Console.WriteLine($"binary {a.Binary}");
+                    foreach (Minterm a in d.Members)
+                    {
+                        Console.WriteLine($"binary {a.Binary}");
+                    }
                 }
+                Console.WriteLine($"\n");
             }
-            Console.WriteLine($"\n");
         }
-
-
-
+        
         List<Minterm> primeImplicants = new List<Minterm>();//new minterm list for prime implicants
-        List<Minterm> essencialPrimeImplicants = new List<Minterm>();//new minterm list for essencial prime implicants
+        List<Minterm> essentialPrimeImplicants = new List<Minterm>();//new minterm list for essential prime implicants
         List<Minterm> keeperPrimeImplicants = new List<Minterm>();
         List<List<Minterm>> answers = new List<List<Minterm>>();
         foreach (Table e in TableList)//iterate over the table list to find tables
@@ -244,29 +245,33 @@ public class Program
         }
 
         primeImplicants = reduceAnswerString(primeImplicants);//take out any duplicate implicants
-        Console.WriteLine($"\n");
 
         primeImplicantsTable PImp = new primeImplicantsTable(primeImplicants, vars, minterms);//get prime implicants
-        essencialPrimeImplicants = PImp.findEPI();                                            //get essencial prime implicants
+        essentialPrimeImplicants = PImp.findEPI();                                            //get essential prime implicants
         keeperPrimeImplicants = reduceAnswerString(PImp.findKeepers());                       //get prime implicants we need to keep
 
-
-        Console.WriteLine($"essencial");    //itterate over essencial prime implicants and print
-        foreach (Minterm s in essencialPrimeImplicants)
+        if (nthBit(printMask, 1) == 1)
         {
-            Console.WriteLine($"binary = {s.Binary}");
+            Console.WriteLine($"essential");    //itterate over essential prime implicants and print
+            foreach (Minterm s in essentialPrimeImplicants)
+            {
+                Console.WriteLine($"binary = {s.Binary}");
+            }
+            Console.Write($"\n");
         }
-        Console.Write($"\n");
 
-        Console.WriteLine($"keepers pime");//itterate over keeperPrimeImplicants and print
-        foreach (Minterm s in keeperPrimeImplicants)
+        if (nthBit(printMask, 2) == 1)
         {
-            Console.WriteLine($"binary = {s.Binary}");
+            Console.WriteLine($"keepers prime");//itterate over keeperPrimeImplicants and print
+            foreach (Minterm s in keeperPrimeImplicants)
+            {
+                Console.WriteLine($"binary = {s.Binary}");
 
+            }
+            Console.Write($"\n");
         }
-        Console.Write($"\n");
 
-        answers = PImp.getAnswerList(essencialPrimeImplicants, keeperPrimeImplicants);
+        answers = PImp.getAnswerList(essentialPrimeImplicants, keeperPrimeImplicants);
 
         string answersString = string.Empty;
         foreach (List<Minterm> x in answers)
@@ -275,10 +280,12 @@ public class Program
             {
                 answersString += $"{printBinaryToString(c.Binary, vars)} + ";
             }
-            Console.WriteLine();
         }
+        if (nthBit(printMask, 3) == 1)
+        {
 
-        Console.WriteLine($"Answers: {answersString}");
+        }
+            Console.WriteLine($"Answers: {answersString.Substring(0, answersString.Length - 3)}");
         return answersString.Substring(0, answersString.Length-3);
     }
 
@@ -326,6 +333,11 @@ public class Program
         
 
         return finalString;
+    }
+
+    private static int nthBit(ushort num, int n)
+    {
+        return (num >> n) & 1;
     }
 
 }
