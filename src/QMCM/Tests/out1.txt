@@ -1,0 +1,48 @@
+a'c'd + a'bc' + a'bd
+
+ab'c + ac'd
+
+a'cd' + a'bd + ab'c'd'
+
+a'cd + a'bd + a'bc
+
+a'b'c'd + a'b'cd'
+
+a'b'c'd
+
+ab'd + ab'c
+
+a'b'cd + a'bc'd'
+
+b + a
+
+d + c + b + a
+
+a'bc'd' + ab'c'd'
+
+a'b'c'e + a'b'ce' + a'bc'd'e'
+
+a'c'de' + a'cde
+
+a'c'de' + a'cde + a'bc'd
+
+a'b'c'd'e + a'b'c'de'
+
+a'b'c'd'e + a'bcd
+
+a'bc'de
+
+a'b
+
+ab
+
+a'b'
+
+acd + bc'd' + ab'd
+
+x'f'g'
+
+x'g + xg'
+
+x'f'g'j'h'q't'l + x'f'g'j'h'q'tl'
+

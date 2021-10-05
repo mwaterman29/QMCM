@@ -1,32 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 public class Program
 {
     public static void Main(string[] args)
     {
-        //list init
-        List<Minterm> minterms = new List<Minterm>();
-        List<string> vars = new List<string>();
 
         //Prompt user
         Console.WriteLine($"Enter a file path to read from a file, two comma separated files paths for testing, or a list of variables then a list of minterms to run the program.");
 
-        //Read line in
+        //Read line in, decide on run mode based on properties of read line
         string line = Console.ReadLine();
-        if(line.Contains("/") || line.Contains(".") || line.Contains("\\")) // if line is a file path
+        if (line.Contains("/") || line.Contains(".") || line.Contains("\\")) // if line is a file path
         {
-            if(line.Split(',').Length == 1) //if one file
+            if (line.Split(',').Length == 1) //if one file
             {
-                Console.WriteLine($"Running input from file {line}");
-                string path = line.Trim();
+                OneFile(line);
             }
-            else if(line.Split(',').Length == 2)
+            else if (line.Split(',').Length == 2)
             {
                 Console.WriteLine($"Running tests from input file {line.Split(',')[0]}, to match output file {line.Split(',')[1].Trim()}");
-                string inPath = line.Split(',')[0].Trim();
-                string outPath = line.Split(',')[1].Trim();
+                TwoFiles(line);
             }
             else
             {
@@ -36,13 +32,55 @@ public class Program
         }
         else
         {
-            //first line should be variables
+            DirectInput(line);
+        }
+
+    }
+
+    public static void DirectInput(string line)
+    {
+        //Read line of comma-separated variables
+        List<string> vars = line.Split(',').ToList();
+        int varCount = vars.Count;
+
+        //Read second line of comma-separated minterms
+        line = Console.ReadLine();
+        List<Minterm> minterms =
+            line.Split(',')
+            .Select(x => new Minterm(int.Parse(x), varCount))
+            .ToList();
+
+        //run on those variables
+        Run(minterms, vars);
+    }
+
+    public static void OneFile(string line)
+    {
+        //list init
+        List<Minterm> minterms = new List<Minterm>();
+        List<string> vars = new List<string>();
+
+        Console.WriteLine($"Running on input from file {line}");
+
+        Console.WriteLine($"Reading next pair of lines...");
+
+        //Read lines from file, run input
+        if (!ropen(line, out StreamReader reader))
+            return;
+
+        while (!reader.EndOfStream)
+        {
+            minterms.Clear();
+            vars.Clear();
+
+            //Read line of comma-separated variables
+            line = reader.ReadLine();
             vars.AddRange(line.Split(',').ToList());
             int varCount = vars.Count;
 
             //Read line of comma-separated minterms
-            line = Console.ReadLine();
-            minterms.AddRange( 
+            line = reader.ReadLine();
+            minterms.AddRange(
                 line.Split(',')
                 .Select(x => new Minterm(int.Parse(x), varCount))
                 .ToList()
@@ -51,7 +89,90 @@ public class Program
             //run on those variables
             Run(minterms, vars);
         }
+    }
 
+    public static void TwoFiles(string line)
+    {
+        //list init
+        List<Minterm> minterms = new List<Minterm>();
+        List<string> vars = new List<string>();
+
+
+        string inPath = line.Split(',')[0].Trim();
+        string outPath = line.Split(',')[1].Trim();
+        Console.WriteLine($"Reading from input {inPath}, expected output {outPath}");
+        if (!ropen(inPath, out StreamReader inreader))
+            return;
+        if (!ropen(outPath, out StreamReader outreader))
+            return;
+
+        int successes = 0;
+        List<string> failures = new List<string>();
+
+        while (!inreader.EndOfStream)
+        {
+            minterms.Clear();
+            vars.Clear();
+
+            Console.WriteLine($"Reading next pair of lines...");
+
+            //Read line of comma-separated variables
+            line = inreader.ReadLine();
+            Console.WriteLine(line);
+            string varscopy = line;
+            vars.AddRange(line.Split(',').ToList());
+            int varCount = vars.Count;
+
+            //Read line of comma-separated minterms
+            line = inreader.ReadLine();
+            string mintermscopy = line;
+            Console.WriteLine(line);
+            minterms.AddRange(
+                line.Split(',')
+                .Select(x => new Minterm(int.Parse(x), varCount))
+                .ToList()
+                );
+
+            //run on those variables
+            string output = Run(minterms, vars);
+            string expected = outreader.ReadLine();
+            if (output != expected)
+                failures.Add($"FAILURE: Output {output} did NOT match expected output {expected}. \nOriginal inputs: \n{varscopy}\n{mintermscopy}");
+            else
+                successes++;
+
+            //read newline
+            outreader.ReadLine();
+        }
+
+        Console.WriteLine($"Of {successes + failures.Count} total tests, {failures.Count} failed.");
+        failures.ForEach(fail => Console.WriteLine(fail));
+
+    }
+
+    //Helper method to open file from path, or parse a non-absolute path.
+    private static bool ropen(string fname, out StreamReader reader)
+    {
+        string path = fname.Trim();
+
+        //if not an absolute path
+        if (!path.Contains(@":\"))
+        {
+            string dir = Directory.GetCurrentDirectory();
+            string topdir = dir.Substring(0, dir.IndexOf(@"src\QMCM\") + 9);
+            path = topdir + fname.Trim();
+        }
+        try
+        {
+            reader = new StreamReader(path);
+            return true;
+        }
+        catch (FileNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+            reader = null;
+            return false;
+        }
     }
 
     /*
@@ -68,7 +189,7 @@ public class Program
 
         Step 6 − Reduce the prime implicant table by removing the row of each essential prime implicant and the columns corresponding to the min terms that are covered in that essential prime implicant. Repeat step 5 for Reduced prime implicant table. Stop this process when all min terms of given Boolean function are over.
         */
-    public static void Run(List<Minterm> minterms, List<string> vars, ushort printMask = 65535)
+    public static string Run(List<Minterm> minterms, List<string> vars, ushort printMask = 65535)
     {
         int varCount = vars.Count;
 
@@ -147,15 +268,18 @@ public class Program
 
         answers = PImp.getAnswerList(essencialPrimeImplicants, keeperPrimeImplicants);
 
-        Console.WriteLine($"answers:");
+        string answersString = string.Empty;
         foreach (List<Minterm> x in answers)
         {
             foreach (Minterm c in x)
             {
-                Console.Write($" {printBinaryToString(c.Binary, vars)} ");
+                answersString += $"{printBinaryToString(c.Binary, vars)} + ";
             }
             Console.WriteLine();
         }
+
+        Console.WriteLine($"Answers: {answersString}");
+        return answersString.Substring(0, answersString.Length-3);
     }
 
     //take out any duplicate implicants
