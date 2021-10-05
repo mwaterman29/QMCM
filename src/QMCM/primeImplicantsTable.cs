@@ -124,7 +124,7 @@ class primeImplicantsTable
                 answers = answers.Distinct().ToList();
             }
             answers = answers.Distinct().ToList();
-            answersL.Add(answers);                             //add answers list to list of answers lists
+            answersL.Add(clear_dupes(answers));                             //add answers list to list of answers lists
         }
         if (answersL.Count == 0)                               //if there were no keeper primes to find combos for, add esencial primes to answer list
         {
@@ -134,11 +134,8 @@ class primeImplicantsTable
             }
             answersL.Add(answers);
         }
-        foreach(List<Minterm> p in answersL)
-        {
-            final_answers.Add(p.Distinct().ToList());
-        }
-        return final_answers;                                        //return answer list
+        
+        return answersL;                                        //return answer list
     }
 
     public List<Minterm> findKeepers()//finds the prime implicants we would like to keep from the prime implicants list
@@ -307,6 +304,43 @@ class primeImplicantsTable
 
         return allCombinations;
 
+    }
+
+    private List<Minterm> clear_dupes(List<Minterm> starters)
+    {
+        List<Minterm> answers = new List<Minterm>();
+        List<string> answers_binary = new List<string>();
+        
+        foreach(Minterm m in starters)
+        {
+            foreach(Minterm n in starters)
+            {
+                if(m.Binary == n.Binary && !(list_contains_string(answers_binary, m.Binary)))
+                {
+                    Console.WriteLine(m.Binary + " " + n.Binary);
+                    answers.Add(m);
+                    answers_binary.Add(m.Binary);
+                    answers_binary.Add(n.Binary);
+                }
+            }
+
+        }
+        
+        return answers;
+    }
+
+    private bool list_contains_string(List<string> list, string comp)
+    {
+        foreach(string l in list)
+        {
+            if (l.Contains(comp))
+            {
+                Console.WriteLine("true");
+                return true;
+            }
+        }
+        Console.WriteLine("false");
+        return false;
     }
 
 }

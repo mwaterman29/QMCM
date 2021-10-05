@@ -278,9 +278,12 @@ public class Program
         {
             foreach (Minterm c in x)
             {
+                Console.WriteLine("minterm binaray = " + c.Binary);
                 answersString += $"{printBinaryToString(c.Binary, vars)} + ";
             }
         }
+        
+
         if (nthBit(printMask, 3) == 1)
         {
 
